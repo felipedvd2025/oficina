@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -15,6 +16,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.Optional;
 
 public class App extends Application {
 
@@ -75,8 +78,11 @@ public class App extends Application {
         Button botaoCadastrar = new Button("Cadastrar");
         botaoCadastrar.setOnAction(e -> cadastrar());
 
+        Button botaoExcluir = new Button("Excluir");
+        botaoExcluir.setOnAction(e -> excluir());
+
         HBox formulario = new HBox(10, campoCliente, campoVeiculo, campoServico,
-                                   campoValor, botaoCadastrar);
+                                   campoValor, botaoCadastrar, botaoExcluir);
 
         VBox raiz = new VBox(10, formulario, tabela);
         raiz.setPadding(new Insets(15));
@@ -110,6 +116,24 @@ public class App extends Application {
         campoVeiculo.clear();
         campoServico.clear();
         campoValor.clear();
+    }
+
+    private void excluir() {
+        OrdemServico selecionada = tabela.getSelectionModel().getSelectedItem();
+
+        if (selecionada == null) {
+            avisar("Selecione uma linha da tabela para excluir.");
+            return;
+        }
+
+        Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION,
+                "Excluir a ordem de " + selecionada.getCliente() + "?");
+        confirmacao.setHeaderText(null);
+
+        Optional<ButtonType> resposta = confirmacao.showAndWait();
+        if (resposta.isPresent() && resposta.get() == ButtonType.OK) {
+            ordens.remove(selecionada);
+        }
     }
 
     private void avisar(String mensagem) {
