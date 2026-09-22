@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -20,6 +21,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.Optional;
+import java.text.NumberFormat;  //Formatacao de dinheiro - valor em real BRL
+import java.util.Locale;
 
 public class App extends Application {
 
@@ -56,9 +59,22 @@ public class App extends Application {
         colServico.setPrefWidth(220);
 
         TableColumn<OrdemServico, Double> colValor = new TableColumn<>("Valor");
-        colValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
-        colValor.setPrefWidth(100);
-
+        colValor.setCellValueFactory(new PropertyValueFactory<>("valor")); // Localidade da moeda.
+        NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance(
+        		new Locale("pt", "BR")
+        		);
+        colValor.setCellFactory(coluna -> new TableCell<OrdemServico, Double>(){
+        	@Override
+        	protected void updateItem(Double valor, boolean vazio) {
+        		super.updateItem(valor, vazio);
+        		if (vazio || valor == null) {
+        			setText(null);
+        		} else {
+        			setText(formatoMoeda.format(valor));
+        		}
+        	}
+        });
+        colValor.setPrefWidth(120); //###################
         tabela.getColumns().add(colNumero);
         tabela.getColumns().add(colCliente);
         tabela.getColumns().add(colVeiculo);
