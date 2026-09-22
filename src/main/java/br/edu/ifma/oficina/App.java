@@ -13,6 +13,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -87,22 +89,149 @@ public class App extends Application {
         Button botaoExcluir = new Button("Excluir");
         botaoExcluir.setOnAction(e -> excluir());
 
-        HBox formulario = new HBox(10, campoCliente, campoVeiculo, campoServico,
-                                   campoValor, botaoCadastrar, botaoEditar, botaoExcluir);
+     // =========================
+     // CABEÇALHO
+     // =========================
 
-        VBox raiz = new VBox(10, formulario, tabela);
-        raiz.setPadding(new Insets(15));
-        
-        //link do css
-        Scene cena = new Scene(raiz, 880, 420);
-        cena.getStylesheets().add(
-        		getClass().getResource("/styles.css").toExternalForm()
-        );
-        
+     Label titulo = new Label("Oficina");
+     titulo.getStyleClass().add("titulo-principal");
 
-        janela.setTitle("Oficina - Ordens de Serviço");
-        janela.setScene(cena);
-        janela.show();
+     Label subtitulo = new Label("Gerenciamento de Ordens de Serviço");
+     subtitulo.getStyleClass().add("subtitulo");
+
+     VBox cabecalho = new VBox(3, titulo, subtitulo);
+
+
+     // =========================
+     // FORMULÁRIO
+     // =========================
+
+     Label tituloFormulario = new Label("Nova ordem de serviço");
+     tituloFormulario.getStyleClass().add("titulo-secao");
+
+     Label labelCliente = new Label("Cliente");
+     Label labelVeiculo = new Label("Veículo");
+     Label labelServico = new Label("Serviço");
+     Label labelValor = new Label("Valor");
+
+     labelCliente.getStyleClass().add("label-campo");
+     labelVeiculo.getStyleClass().add("label-campo");
+     labelServico.getStyleClass().add("label-campo");
+     labelValor.getStyleClass().add("label-campo");
+
+     GridPane formulario = new GridPane();
+
+     formulario.setHgap(15);
+     formulario.setVgap(8);
+
+
+     // Cliente e veículo
+
+     formulario.add(labelCliente, 0, 0);
+     formulario.add(labelVeiculo, 1, 0);
+
+     formulario.add(campoCliente, 0, 1);
+     formulario.add(campoVeiculo, 1, 1);
+
+
+     // Serviço e valor
+
+     formulario.add(labelServico, 0, 2);
+     formulario.add(labelValor, 1, 2);
+
+     formulario.add(campoServico, 0, 3);
+     formulario.add(campoValor, 1, 3);
+
+
+     // Permite que os campos ocupem o espaço disponível
+
+     campoCliente.setMaxWidth(Double.MAX_VALUE);
+     campoVeiculo.setMaxWidth(Double.MAX_VALUE);
+     campoServico.setMaxWidth(Double.MAX_VALUE);
+     campoValor.setMaxWidth(Double.MAX_VALUE);
+
+     GridPane.setHgrow(campoCliente, Priority.ALWAYS);
+     GridPane.setHgrow(campoVeiculo, Priority.ALWAYS);
+     GridPane.setHgrow(campoServico, Priority.ALWAYS);
+     GridPane.setHgrow(campoValor, Priority.ALWAYS);
+
+
+     // Estilo do botão cadastrar
+
+     botaoCadastrar.getStyleClass().add("botao-principal");
+
+     HBox acoesFormulario = new HBox(10, botaoCadastrar);
+
+
+     // Card do formulário
+
+     VBox cardFormulario = new VBox(
+             15,
+             tituloFormulario,
+             formulario,
+             acoesFormulario
+     );
+
+     cardFormulario.getStyleClass().add("card");
+
+
+     // =========================
+     // TABELA
+     // =========================
+
+     Label tituloTabela = new Label("Ordens de serviço");
+     tituloTabela.getStyleClass().add("titulo-secao");
+
+     botaoEditar.getStyleClass().add("botao-editar");
+     botaoExcluir.getStyleClass().add("botao-excluir");
+
+     HBox acoesTabela = new HBox(
+             10,
+             botaoEditar,
+             botaoExcluir
+     );
+
+     VBox cardTabela = new VBox(
+             15,
+             tituloTabela,
+             tabela,
+             acoesTabela
+     );
+
+     cardTabela.getStyleClass().add("card");
+
+     VBox.setVgrow(tabela, Priority.ALWAYS);
+
+
+     // =========================
+     // LAYOUT PRINCIPAL
+     // =========================
+
+     VBox raiz = new VBox(
+             20,
+             cabecalho,
+             cardFormulario,
+             cardTabela
+     );
+
+     raiz.setPadding(new Insets(25));
+
+     // link do css
+     
+     Scene cena = new Scene(raiz, 900, 650);
+
+     cena.getStylesheets().add(
+             getClass().getResource("/styles.css").toExternalForm()
+     );
+
+     janela.setTitle("Oficina - Ordens de Serviço");
+
+     janela.setScene(cena);
+
+     janela.setMinWidth(800);
+     janela.setMinHeight(600);
+
+     janela.show();
     }
 
     private void cadastrar() {
