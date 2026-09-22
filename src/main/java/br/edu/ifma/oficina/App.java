@@ -92,9 +92,16 @@ public class App extends Application {
 
         VBox raiz = new VBox(10, formulario, tabela);
         raiz.setPadding(new Insets(15));
+        
+        //link do css
+        Scene cena = new Scene(raiz, 880, 420);
+        cena.getStylesheets().add(
+        		getClass().getResource("/styles.css").toExternalForm()
+        );
+        
 
         janela.setTitle("Oficina - Ordens de Serviço");
-        janela.setScene(new Scene(raiz, 880, 420));
+        janela.setScene(cena);
         janela.show();
     }
 
