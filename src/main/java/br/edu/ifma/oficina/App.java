@@ -43,6 +43,8 @@ public class App extends Application {
     public void start(Stage janela) {
 
         tabela = new TableView<>();
+        
+        tabela.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         TableColumn<OrdemServico, Integer> colNumero = new TableColumn<>("Nº");
         colNumero.setCellValueFactory(new PropertyValueFactory<>("numero"));

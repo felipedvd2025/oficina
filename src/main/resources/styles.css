@@ -101,6 +101,12 @@
 	-fx-border-radius:6px;
 	-fx-background-radius: 6px;
 }
+.table-view .placeholder .label {
+    -fx-text-fill: #a9b8c8;
+}
+.table-view .filler {
+    -fx-background-color: #202630;
+}
 .table-view .column-header{
 	-fx-background-color: transparent;
 	-fx-padding: 8px;
