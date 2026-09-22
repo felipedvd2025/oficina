@@ -1,6 +1,8 @@
 package br.edu.ifma.oficina;
 
 import javafx.application.Application;
+import javafx.scene.control.TextFormatter;
+import java.util.function.UnaryOperator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -104,18 +106,34 @@ public class App extends Application {
 
         Button botaoExcluir = new Button("Excluir");
         botaoExcluir.setOnAction(e -> excluir());
+        //####### Formatação do campo de valores 
+        UnaryOperator<TextFormatter.Change> filtroValor = alteracao -> {
 
+            String novoTexto = alteracao.getControlNewText();
+
+            if (novoTexto.matches("^$|\\d{1,9}([,.]\\d{0,2})?")) {
+                return alteracao;
+            }
+
+            return null;
+        };
+
+        campoValor.setTextFormatter(
+                new TextFormatter<>(filtroValor)
+        );
      // CABEÇALHO
+        Label icone = new Label("🔧");
+        icone.getStyleClass().add("logo-icone");
 
-     Label titulo = new Label("Oficina");
-     titulo.getStyleClass().add("titulo-principal");
+        Label titulo = new Label("MOBILIUM");
+        titulo.getStyleClass().add("titulo-principal");
 
-     Label subtitulo = new Label("Gerenciamento de Ordens de Serviço");
-     subtitulo.getStyleClass().add("subtitulo");
+        Label subtitulo = new Label("OFICINA DE GESTÃO");
+        subtitulo.getStyleClass().add("subtitulo");
 
-     VBox cabecalho = new VBox(3, titulo, subtitulo);
+        VBox textosLogo = new VBox(2, titulo, subtitulo);
 
-
+        HBox cabecalho = new HBox(12, icone, textosLogo);
      // FORMULÁRIO
 
      Label tituloFormulario = new Label("Nova ordem de serviço");
@@ -234,7 +252,7 @@ public class App extends Application {
              getClass().getResource("/styles.css").toExternalForm()
      );
 
-     janela.setTitle("Oficina - Ordens de Serviço");
+     janela.setTitle("Mobilium - Oficina e Ordens de Serviço");
 
      janela.setScene(cena);
 
@@ -258,7 +276,7 @@ public class App extends Application {
         try {
             valor = Double.parseDouble(campoValor.getText().trim().replace(",", "."));
         } catch (NumberFormatException ex) {
-            avisar("Valor inválido. Use apenas números, como 150.00");
+            avisar("Informe um valor válido.");
             return;
         }
 
@@ -292,6 +310,7 @@ public class App extends Application {
     }
 
     private void excluir() {
+
         OrdemServico selecionada = tabela.getSelectionModel().getSelectedItem();
 
         if (selecionada == null) {
@@ -299,11 +318,27 @@ public class App extends Application {
             return;
         }
 
-        Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION,
-                "Excluir a ordem de " + selecionada.getCliente() + "?");
-        confirmacao.setHeaderText(null);
+        NumberFormat moeda = NumberFormat.getCurrencyInstance(
+                new Locale("pt", "BR")
+        );
+
+        Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION);
+
+        confirmacao.setTitle("Confirmar exclusão");
+
+        confirmacao.setHeaderText(
+                "Deseja excluir esta ordem de serviço?"
+        );
+
+        confirmacao.setContentText(
+                "Cliente: " + selecionada.getCliente() +
+                "\nVeículo: " + selecionada.getVeiculo() +
+                "\nServiço: " + selecionada.getServico() +
+                "\nValor: " + moeda.format(selecionada.getValor())
+        );
 
         Optional<ButtonType> resposta = confirmacao.showAndWait();
+
         if (resposta.isPresent() && resposta.get() == ButtonType.OK) {
             ordens.remove(selecionada);
             limparFormulario();
