@@ -5,10 +5,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -17,6 +21,10 @@ public class App extends Application {
     private final ObservableList<OrdemServico> ordens = FXCollections.observableArrayList();
 
     private TableView<OrdemServico> tabela;
+    private TextField campoCliente;
+    private TextField campoVeiculo;
+    private TextField campoServico;
+    private TextField campoValor;
 
     @Override
     public void start(Stage janela) {
@@ -52,12 +60,62 @@ public class App extends Application {
         tabela.setItems(ordens);
         tabela.setPlaceholder(new Label("Nenhuma ordem cadastrada."));
 
-        VBox raiz = new VBox(10, tabela);
+        campoCliente = new TextField();
+        campoCliente.setPromptText("Cliente");
+
+        campoVeiculo = new TextField();
+        campoVeiculo.setPromptText("Veículo");
+
+        campoServico = new TextField();
+        campoServico.setPromptText("Serviço");
+
+        campoValor = new TextField();
+        campoValor.setPromptText("Valor");
+
+        Button botaoCadastrar = new Button("Cadastrar");
+        botaoCadastrar.setOnAction(e -> cadastrar());
+
+        HBox formulario = new HBox(10, campoCliente, campoVeiculo, campoServico,
+                                   campoValor, botaoCadastrar);
+
+        VBox raiz = new VBox(10, formulario, tabela);
         raiz.setPadding(new Insets(15));
 
         janela.setTitle("Oficina - Ordens de Serviço");
         janela.setScene(new Scene(raiz, 780, 420));
         janela.show();
+    }
+
+    private void cadastrar() {
+        String cliente = campoCliente.getText().trim();
+        String veiculo = campoVeiculo.getText().trim();
+        String servico = campoServico.getText().trim();
+
+        if (cliente.isEmpty() || veiculo.isEmpty() || servico.isEmpty()) {
+            avisar("Preencha cliente, veículo e serviço.");
+            return;
+        }
+
+        double valor;
+        try {
+            valor = Double.parseDouble(campoValor.getText().trim().replace(",", "."));
+        } catch (NumberFormatException ex) {
+            avisar("Valor inválido. Use apenas números, como 150.00");
+            return;
+        }
+
+        ordens.add(new OrdemServico(cliente, veiculo, servico, valor));
+
+        campoCliente.clear();
+        campoVeiculo.clear();
+        campoServico.clear();
+        campoValor.clear();
+    }
+
+    private void avisar(String mensagem) {
+        Alert alerta = new Alert(Alert.AlertType.WARNING, mensagem);
+        alerta.setHeaderText(null);
+        alerta.showAndWait();
     }
 
     public static void main(String[] args) {
