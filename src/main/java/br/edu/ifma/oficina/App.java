@@ -105,9 +105,7 @@ public class App extends Application {
         Button botaoExcluir = new Button("Excluir");
         botaoExcluir.setOnAction(e -> excluir());
 
-     // =========================
      // CABEÇALHO
-     // =========================
 
      Label titulo = new Label("Oficina");
      titulo.getStyleClass().add("titulo-principal");
@@ -118,9 +116,7 @@ public class App extends Application {
      VBox cabecalho = new VBox(3, titulo, subtitulo);
 
 
-     // =========================
      // FORMULÁRIO
-     // =========================
 
      Label tituloFormulario = new Label("Nova ordem de serviço");
      tituloFormulario.getStyleClass().add("titulo-secao");
@@ -191,9 +187,9 @@ public class App extends Application {
      cardFormulario.getStyleClass().add("card");
 
 
-     // =========================
+
      // TABELA
-     // =========================
+
 
      Label tituloTabela = new Label("Ordens de serviço");
      tituloTabela.getStyleClass().add("titulo-secao");
@@ -219,9 +215,7 @@ public class App extends Application {
      VBox.setVgrow(tabela, Priority.ALWAYS);
 
 
-     // =========================
      // LAYOUT PRINCIPAL
-     // =========================
 
      VBox raiz = new VBox(
              20,
