@@ -28,6 +28,9 @@ public class App extends Application {
     private TextField campoVeiculo;
     private TextField campoServico;
     private TextField campoValor;
+    private Button botaoCadastrar;
+
+    private OrdemServico emEdicao = null;
 
     @Override
     public void start(Stage janela) {
@@ -75,20 +78,23 @@ public class App extends Application {
         campoValor = new TextField();
         campoValor.setPromptText("Valor");
 
-        Button botaoCadastrar = new Button("Cadastrar");
+        botaoCadastrar = new Button("Cadastrar");
         botaoCadastrar.setOnAction(e -> cadastrar());
+
+        Button botaoEditar = new Button("Editar");
+        botaoEditar.setOnAction(e -> editar());
 
         Button botaoExcluir = new Button("Excluir");
         botaoExcluir.setOnAction(e -> excluir());
 
         HBox formulario = new HBox(10, campoCliente, campoVeiculo, campoServico,
-                                   campoValor, botaoCadastrar, botaoExcluir);
+                                   campoValor, botaoCadastrar, botaoEditar, botaoExcluir);
 
         VBox raiz = new VBox(10, formulario, tabela);
         raiz.setPadding(new Insets(15));
 
         janela.setTitle("Oficina - Ordens de Serviço");
-        janela.setScene(new Scene(raiz, 780, 420));
+        janela.setScene(new Scene(raiz, 880, 420));
         janela.show();
     }
 
@@ -110,12 +116,33 @@ public class App extends Application {
             return;
         }
 
-        ordens.add(new OrdemServico(cliente, veiculo, servico, valor));
+        if (emEdicao == null) {
+            ordens.add(new OrdemServico(cliente, veiculo, servico, valor));
+        } else {
+            emEdicao.setCliente(cliente);
+            emEdicao.setVeiculo(veiculo);
+            emEdicao.setServico(servico);
+            emEdicao.setValor(valor);
+            tabela.refresh();
+        }
 
-        campoCliente.clear();
-        campoVeiculo.clear();
-        campoServico.clear();
-        campoValor.clear();
+        limparFormulario();
+    }
+
+    private void editar() {
+        OrdemServico selecionada = tabela.getSelectionModel().getSelectedItem();
+
+        if (selecionada == null) {
+            avisar("Selecione uma linha da tabela para editar.");
+            return;
+        }
+
+        emEdicao = selecionada;
+        campoCliente.setText(selecionada.getCliente());
+        campoVeiculo.setText(selecionada.getVeiculo());
+        campoServico.setText(selecionada.getServico());
+        campoValor.setText(String.valueOf(selecionada.getValor()));
+        botaoCadastrar.setText("Salvar");
     }
 
     private void excluir() {
@@ -133,7 +160,18 @@ public class App extends Application {
         Optional<ButtonType> resposta = confirmacao.showAndWait();
         if (resposta.isPresent() && resposta.get() == ButtonType.OK) {
             ordens.remove(selecionada);
+            limparFormulario();
         }
+    }
+
+    private void limparFormulario() {
+        campoCliente.clear();
+        campoVeiculo.clear();
+        campoServico.clear();
+        campoValor.clear();
+        emEdicao = null;
+        botaoCadastrar.setText("Cadastrar");
+        tabela.getSelectionModel().clearSelection();
     }
 
     private void avisar(String mensagem) {
