@@ -46,3 +46,9 @@ src/main/resources/
 ---
 
 Projeto acadêmico desenvolvido para prática de programação desktop com JavaFX.
+
+## Equipe: 
+- Felipe da Costa
+- Luan Lucas
+- Luís Felype
+- Vitor Sâmile 
