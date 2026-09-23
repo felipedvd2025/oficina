@@ -130,7 +130,7 @@ public class App extends Application {
         Label titulo = new Label("MOBILIUM");
         titulo.getStyleClass().add("titulo-principal");
 
-        Label subtitulo = new Label("OFICINA DE GESTÃO");
+        Label subtitulo = new Label("GESTÃO DE OFICINA MECÂNICA");
         subtitulo.getStyleClass().add("subtitulo");
 
         VBox textosLogo = new VBox(2, titulo, subtitulo);
